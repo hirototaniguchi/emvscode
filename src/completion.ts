@@ -50,23 +50,27 @@ export class Completion implements vscode.CompletionItemProvider{
         // ユーザが現在の行で入力し単語数（スペースの数）
         let inputLength = splited.length - 1;
 
-        // ユーザの入力単語数（スペースの数）が1単語であれば，2-gramを使用
-        if (inputLength === 1){
+        // 入力補完に利用するN-gramの数
+        let N = 4;
+        let sliced:String[] = [];
+        // 利用するN-gramに応じて，切り出しを行う
+        // bi-gramの場合は直前の単語のみを切り出す
+        if (inputLength >= N){
+            sliced = splited.slice(inputLength-N+1, inputLength);
+        }
+        else{
+            sliced = splited.slice(0, inputLength);
+        }
+        recentInputText = sliced.join(' ') + ' ';
+        console.log(recentInputText);
+        if (sliced.length === 1){
             keywords = keywords2;
-            recentInputText = splited[inputLength-1] + ' ';
         }
-        // ユーザの入力単語数（スペースの数）が2単語であれば，3-gramを使用
-        else if (inputLength === 2){
+        else if (sliced.length === 2){
             keywords = keywords3;
-            recentInputText = splited[inputLength-2] + ' ' 
-                            + splited[inputLength-1] + ' ';
         }
-        // ユーザの入力単語数（スペースの数）が3以上であれば，4-gramを使用
         else{
             keywords = keywords4;
-            recentInputText = splited[inputLength-3] + ' ' 
-                            + splited[inputLength-2] + ' ' 
-                            + splited[inputLength-1] + ' ';
         }
 
         let countItems = 0;

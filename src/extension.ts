@@ -150,7 +150,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     let completion = new Completion();
     let sel = {scheme: 'file', language: 'Mizar'};
-    let disposable11 = vscode.languages.registerCompletionItemProvider(sel, completion, ' ');
+    let disposable12 = vscode.languages.registerCompletionItemProvider(sel, completion, ' ');
 
     context.subscriptions.push(disposable1);
     context.subscriptions.push(disposable2);
@@ -163,6 +163,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable9);
     context.subscriptions.push(disposable10);
     context.subscriptions.push(disposable11);
+    context.subscriptions.push(disposable12);
 }
 
 // this method is called when your extension is deactivated
