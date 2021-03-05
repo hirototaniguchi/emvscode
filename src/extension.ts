@@ -3,6 +3,7 @@ import * as path from 'path';
 import { mizar_verify, mizfiles } from './mizarFunctions';
 import { makeQueryFunction } from './mizarMessages';
 import { displayErrorLinks } from './displayErrors';
+import { DefinitionProvider} from './goToDefinition';
 import { HoverProvider } from './hover';
 import { Completion } from './completion';
 
@@ -146,7 +147,9 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     let hover = new HoverProvider();
-    let disposable11 = vscode.languages.registerHoverProvider({scheme: 'file', language: 'Mizar'}, hover);
+    let sel = {scheme:'file', languages:'Mizar'};
+    let disposable11 = vscode.languages.registerDefinitionProvider(sel,new DefinitionProvider());
+    let disposable12 = vscode.languages.registerHoverProvider({scheme: 'file', language: 'Mizar'}, hover);
 
     let completion = new Completion();
     let sel = {scheme: 'file', language: 'Mizar'};
