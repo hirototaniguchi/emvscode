@@ -51,7 +51,7 @@ export class Completion implements vscode.CompletionItemProvider{
         let inputLength = splited.length - 1;
 
         // 入力補完に利用するN-gramの数
-        let N = 4;
+        let N = 3;
         let sliced:String[] = [];
         // 利用するN-gramに応じて，切り出しを行う
         // bi-gramの場合は直前の単語のみを切り出す
