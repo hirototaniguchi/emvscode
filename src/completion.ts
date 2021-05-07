@@ -62,7 +62,6 @@ export class Completion implements vscode.CompletionItemProvider{
             sliced = splited.slice(0, inputLength);
         }
         recentInputText = sliced.join(' ') + ' ';
-        console.log(recentInputText);
         if (sliced.length === 1){
             keywords = keywords2;
         }
