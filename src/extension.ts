@@ -140,7 +140,7 @@ export function activate(context: vscode.ExtensionContext) {
     let completion = new Completion();
     context.subscriptions.push(
         vscode.languages.registerCompletionItemProvider(
-            {scheme:'file', language:'Mizar'}, completion, ' '
+            {scheme:'file', language:'Mizar'}, completion
         )
     );
 
