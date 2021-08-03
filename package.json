@@ -153,6 +153,11 @@
                     "when": "resourceLangId == Mizar",
                     "command": "mizar-chklab",
                     "group": "Irrelevant Utilities"
+                },
+                {
+                    "when": "resourceLangId == Mizar",
+                    "command": "mizar-format",
+                    "group": "Formatter"
                 }
             ]
         },
