@@ -150,6 +150,23 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
     context.subscriptions.push(stopCommand);
+
+    let formatter = vscode.commands.registerCommand(
+        'mizar-format',
+        () => {
+            // NOTE:mizarformat.exeを拡張機能に含めている
+            let command = path.join(path.dirname(__dirname), 'formatter', 'mizarformat.exe');
+            if (vscode.window.activeTextEditor === undefined){
+                vscode.window.showErrorMessage('Not currently in .miz file!!');
+                return;
+            }
+            let fileName = vscode.window.activeTextEditor.document.fileName;
+            cp.spawnSync(command, [fileName]);
+            vscode.window.showInformationMessage('The Mizar file has been formatted.');
+        }
+    );
+
+    context.subscriptions.push(formatter);
 }
 
 // this method is called when your extension is deactivated

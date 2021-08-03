@@ -84,6 +84,11 @@
                 "category": "Mizar",
                 "command": "stop-command",
                 "title": "Stop Command"
+            },
+            {
+                "category": "Mizar",
+                "command": "mizar-format",
+                "title": "Format Mizar File"
             }
         ],
         "languages": [
