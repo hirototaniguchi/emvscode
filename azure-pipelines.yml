@@ -19,5 +19,8 @@ steps:
 - script: |
     npm install
     npm install typescript
+    pwd
+    ls
     npm run compile
-    displayName: 'npm install and compile'
+    code .
+    displayName: 'npm install and build'
