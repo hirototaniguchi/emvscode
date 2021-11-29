@@ -22,6 +22,7 @@ steps:
     npm install
     pwd
     ls
+    export PATH=$PATH:`npm bin -g`
     tsc -v
     npm run compile
     code .
