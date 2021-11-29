@@ -17,9 +17,6 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    apt-update
-    apt install nodejs
-    apt install npm
     npm install
     npm run compile
     displayName: 'npm install and compile'
