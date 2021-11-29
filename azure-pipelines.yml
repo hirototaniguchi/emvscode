@@ -24,4 +24,4 @@ steps:
     ls
     npm run compile
     code .
-    displayName: 'npm install and build'
+  displayName: 'npm install and build'
