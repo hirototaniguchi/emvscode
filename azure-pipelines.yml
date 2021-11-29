@@ -18,5 +18,6 @@ steps:
 
 - script: |
     npm install
+    npm install tsc
     npm run compile
     displayName: 'npm install and compile'
