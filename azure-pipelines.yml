@@ -22,6 +22,7 @@ steps:
     npm install
     pwd
     ls
+    tsc -v
     npm run compile
     code .
   displayName: 'npm install and build'
