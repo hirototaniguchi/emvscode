@@ -24,6 +24,9 @@ steps:
     ls
     export PATH=$PATH:`npm bin -g`
     tsc -v
+  displayName: '環境構築と確認'
+  
+- script: |
     npm run compile
     code .
   displayName: 'npm install and build'
