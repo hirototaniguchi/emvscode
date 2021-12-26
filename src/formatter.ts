@@ -11,6 +11,10 @@ export function formatMizar() {
     return;
   }
   const fileName = vscode.window.activeTextEditor.document.fileName;
+  if (path.extname(fileName) !== '.miz') {
+    vscode.window.showErrorMessage('Not currently in .miz file!!');
+    return;
+  }
   let command = '';
   if (process.platform === 'win32') {
     command = path.join(
