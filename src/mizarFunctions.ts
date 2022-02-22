@@ -29,17 +29,17 @@ function padSpace(str:string, num = 9) {
  * @param {string} outputText 出力テキスト
  * @param {number} numberOfProgress プログレス数（「#」の数）
  * @param {number} numberOfErrors エラー数，プログレス横に出力される
- * @return {string} 
+ * @return {string} 足りない「#」とエラー数を追加した文字列
  */
 function addMissingHashTags(
     outputText:string,
     numberOfProgress:number,
-    numberOfErrors:number):string{
+    numberOfErrors:number):string {
   if (MAX_OUTPUT < numberOfProgress) {
     return outputText;
   }
   outputText += '#'.repeat(MAX_OUTPUT - numberOfProgress);
-  if (numberOfErrors > 0){
+  if (numberOfErrors > 0) {
     outputText += ' *' + numberOfErrors;
   }
   outputText += '\n';
@@ -80,8 +80,9 @@ export async function mizarVerify(
   runningCmd.process = makeenvProcess;
   let isMakeenvSuccess = true;
   let isCommandSuccess = true;
-  let outputText = 'Running ' + path.basename(command) + ' on ' + fileName + '\n\n'
-              + '   Start |------------------------------------------------->| End\n';
+  let outputText = 'Running ' + path.basename(command) +
+          ' on ' + fileName + '\n\n' +
+          'Start    |------------------------------------------------->| End\n';
   carrier.carry(makeenvProcess.stdout, (line:string) => {
     // -Vocabularies
     // -Vocabularies  [ 22]
@@ -130,10 +131,11 @@ export async function mizarVerify(
         if (phases.indexOf(phase) === -1) {
           // 直前の項目の#がMAX_OUTPUT未満であれば，足りない分の「#」を追加
           if (phases.length !== 0) {
-            outputText = addMissingHashTags(outputText, numberOfProgress, numberOfErrors);
+            outputText =
+              addMissingHashTags(outputText, numberOfProgress, numberOfErrors);
             channel.replace(outputText);
           }
-          outputText += padSpace(phase) + ':'
+          outputText += padSpace(phase) + ':';
           // 出力の項目を横並びにするために，スペースを補完する
           // OutputChannelに追加した項目として，phasesにpush
           phases.push(phase);
@@ -147,7 +149,7 @@ export async function mizarVerify(
             numberOfParsedLines,
             numberOfProgress);
         const appendChunk = '#'.repeat(progressDiff);
-        if (appendChunk.length >= 1){
+        if (appendChunk.length >= 1) {
           outputText += appendChunk;
           channel.replace(outputText);
         }
@@ -170,7 +172,8 @@ export async function mizarVerify(
           channel.clear();
         } else {
           // プログレスバーがMAX_OUTPUT未満であれば，足りない分の補完とエラー数の追加
-          outputText = addMissingHashTags(outputText, numberOfProgress, numberOfErrors);
+          outputText =
+            addMissingHashTags(outputText, numberOfProgress, numberOfErrors);
           channel.replace(outputText);
           if (isCommandSuccess) {
             // エラーがないことが確定するため，errorMsgを空にする
