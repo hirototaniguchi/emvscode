@@ -7,6 +7,7 @@ import {DefinitionProvider} from './goToDefinition';
 import {HoverProvider} from './hover';
 import {formatMizar} from './formatter';
 import * as cp from 'child_process';
+import { resolve } from 'dns';
 
 export const queryMizarMsg = makeQueryFunction();
 
@@ -130,7 +131,9 @@ export function activate(context: vscode.ExtensionContext) {
         if (runningCmd.process === null) {
           return;
         }
-        runningCmd.process.kill('SIGINT');
+        console.log(runningCmd);
+        let tmp = runningCmd.process.kill('SIGINT');
+        console.log(tmp);
         vscode.window.showInformationMessage('Command stopped!');
       },
   );

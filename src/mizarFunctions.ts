@@ -27,23 +27,31 @@ function padSpace(str:string, num = 9) {
  * プログレスバーの足りない「#」を追加する関数
  * エラーがあれば，その数もプログレスバーの横にappendされる
  * @param {vscode.OutputChannel} channel 出力先のチャンネル
+ * @param {string} outputText 出力テキスト
  * @param {number} numberOfProgress プログレス数（「#」の数）
  * @param {number} numberOfErrors エラー数，プログレス横に出力される
  */
 function addMissingHashTags(
     channel:vscode.OutputChannel,
+    outputText:string,
     numberOfProgress:number,
     numberOfErrors:number) {
   if (MAX_OUTPUT < numberOfProgress) {
     return;
   }
-  const appendChunk = '#'.repeat(MAX_OUTPUT - numberOfProgress);
-  channel.append(appendChunk);
-  // エラーがあれば、その数を出力
-  if (numberOfErrors) {
-    channel.append(' *' + numberOfErrors);
+  // const appendChunk = '#'.repeat(MAX_OUTPUT - numberOfProgress);
+  // channel.append(appendChunk);
+  // // エラーがあれば、その数を出力
+  // if (numberOfErrors) {
+  //   channel.append(' *' + numberOfErrors);
+  // }
+  // channel.appendLine('');
+  outputText += '#'.repeat(MAX_OUTPUT - numberOfProgress);
+  if (numberOfErrors > 0){
+    outputText += ' *' + numberOfErrors;
   }
-  channel.appendLine('');
+  outputText += '\n';
+  channel.replace(outputText);
 }
 
 /**
@@ -79,6 +87,8 @@ export async function mizarVerify(
   runningCmd.process = makeenvProcess;
   let isMakeenvSuccess = true;
   let isCommandSuccess = true;
+  let outputText = 'Running ' + path.basename(command) + ' on ' + fileName + '\n'
+              + '   Start |------------------------------------------------->| End\n';
   carrier.carry(makeenvProcess.stdout, (line:string) => {
     // -Vocabularies
     // -Vocabularies  [ 22]
@@ -101,10 +111,10 @@ export async function mizarVerify(
         resolve('makeenv error');
         return;
       }
-      channel.appendLine('Running ' + path.basename(command) +
-                                ' on ' + fileName + '\n');
-      channel.appendLine(
-          '   Start |------------------------------------------------->| End');
+      // channel.appendLine('Running ' + path.basename(command) +
+      //                           ' on ' + fileName + '\n');
+      // channel.appendLine(
+      //     '   Start |------------------------------------------------->| End');
       const [numberOfEnvironmentalLines, numberOfArticleLines] =
                                                     countLines(fileName);
       let errorMsg = '\n**** Some errors detected.';
@@ -131,11 +141,18 @@ export async function mizarVerify(
         // Parser -> MSMに切り替わる時など，初めての項目で実行される
         if (phases.indexOf(phase) === -1) {
           if (phases.length !== 0) {
+            // 足りないプログレスを補完
+            outputText += '#'.repeat(MAX_OUTPUT - numberOfProgress);
+            if (numberOfErrors > 0){
+              outputText += ' *' + numberOfErrors;
+            }
+            outputText += '\n';
             // 直前の項目の#がMAX_OUTPUT未満であれば，足りない分の「#」を追加
-            addMissingHashTags(channel, numberOfProgress, numberOfErrors);
+            // addMissingHashTags(channel, outputText, numberOfProgress, numberOfErrors);
           }
+          outputText = outputText + padSpace(phase) + ':'
           // 出力の項目を横並びにするために，スペースを補完する
-          channel.append(padSpace(phase) + ':');
+          // channel.append(padSpace(phase) + ':');
           // OutputChannelに追加した項目として，phasesにpush
           phases.push(phase);
           // 新しい項目なので，プログレスを初期化する
@@ -148,7 +165,10 @@ export async function mizarVerify(
             numberOfParsedLines,
             numberOfProgress);
         const appendChunk = '#'.repeat(progressDiff);
-        channel.append(appendChunk);
+        if (appendChunk.length >= 1){
+          outputText += appendChunk;
+          channel.replace(outputText);
+        }
         numberOfProgress += progressDiff;
         // Mizarコマンドが以下のようなエラーを出力すれば，errorMsgを更新
         // エラーの例：「**** One irrelevant 'theorems' directive detected.」
@@ -158,13 +178,15 @@ export async function mizarVerify(
         }
       }, null, /\r/);
       commandProcess.on('close', (code: number, signal: string) => {
+        console.log(code, signal);
         runningCmd.process = null;
+        outputText = '';
         // ユーザがコマンドを中断した場合はクリア
-        if (signal === 'SIGINT') {
+        if (code === 99) {
           channel.clear();
         } else {
           // プログレスバーがMAX_OUTPUT未満であれば，足りない分の補完とエラー数の追加
-          addMissingHashTags(channel, numberOfProgress, numberOfErrors);
+          // addMissingHashTags(channel, outputText, numberOfProgress, numberOfErrors);
           if (isCommandSuccess) {
             // エラーがないことが確定するため，errorMsgを空にする
             errorMsg = '';
