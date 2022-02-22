@@ -131,9 +131,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (runningCmd.process === null) {
           return;
         }
-        console.log(runningCmd);
-        let tmp = runningCmd.process.kill('SIGINT');
-        console.log(tmp);
+        runningCmd.process.kill('SIGINT');
         vscode.window.showInformationMessage('Command stopped!');
       },
   );
